@@ -48,6 +48,13 @@ class Tada_Site_Agent_I18n {
         'save'             => ['vi' => 'Lưu thay đổi',           'en' => 'Save changes'],
         'auth_log'         => ['vi' => 'Nhật ký xác thực gần đây', 'en' => 'Recent authentication log'],
         'source'           => ['vi' => 'Nguồn', 'en' => 'Source'],
+        // SEO tab
+        'scan_all'         => ['vi' => 'Chấm tất cả trang',       'en' => 'Score all pages'],
+        'scanning'         => ['vi' => 'Đang chấm',               'en' => 'Scoring'],
+        'scan_done'        => ['vi' => 'Đã chấm xong',            'en' => 'Done'],
+        'no_scored'        => ['vi' => 'Chưa chấm trang nào. Bấm "Chấm tất cả trang" để bắt đầu.', 'en' => 'No pages scored yet. Click "Score all pages" to start.'],
+        'col_kw'           => ['vi' => 'Keyword',                 'en' => 'Keyword'],
+        'seo_intro'        => ['vi' => 'Điểm SEO từng trang — chấm trên HTML render, phủ cả trang template riêng.', 'en' => 'Per-page SEO score — scored on rendered HTML, covers custom-template pages too.'],
     ];
 
     public static function lang(): string {

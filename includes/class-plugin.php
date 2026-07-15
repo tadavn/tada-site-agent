@@ -32,6 +32,7 @@ final class Tada_Site_Agent_Plugin {
         require_once $inc . 'class-seo-scorer.php';
         require_once $inc . 'class-security.php';
         require_once $inc . 'class-rest-controller.php';
+        require_once $inc . 'class-ajax.php';
         require_once $inc . 'class-admin-menu.php';
         require_once $inc . 'class-settings-page.php';
         require_once $inc . 'update-checker.php';
@@ -40,6 +41,7 @@ final class Tada_Site_Agent_Plugin {
     /** Đăng ký hook của từng thành phần. */
     private function boot(): void {
         Tada_Site_Agent_Rest_Controller::init();
+        Tada_Site_Agent_Ajax::init();
         Tada_Site_Agent_Settings_Page::init();
         Tada_Site_Agent_Admin_Menu::init();
 

@@ -273,4 +273,90 @@ class Tada_Site_Agent_Seo_Scorer {
         $host = parse_url($href, PHP_URL_HOST);
         return $host ?: null;
     }
+
+    // ── Chấm theo post + lưu trữ ──
+
+    const META_SCORE  = '_tada_seo_score';
+    const META_KW     = '_tada_seo_kw_score';
+    const META_ISSUES = '_tada_seo_issues';
+    const META_AT     = '_tada_seo_at';
+
+    /** Chấm 1 post (permalink render) + lưu meta. */
+    public static function score_post(int $post_id): array {
+        $url = get_permalink($post_id);
+        if (!$url) {
+            return ['error' => 'no permalink'];
+        }
+        $r = self::score_url($url, self::rank_math_keyword($post_id));
+        if (!isset($r['error'])) {
+            update_post_meta($post_id, self::META_SCORE, (int) $r['score']);
+            update_post_meta($post_id, self::META_KW, $r['keywordScore'] === null ? '' : (int) $r['keywordScore']);
+            update_post_meta($post_id, self::META_ISSUES, wp_json_encode(self::top_issues($r)));
+            update_post_meta($post_id, self::META_AT, gmdate('c'));
+        }
+        return $r;
+    }
+
+    /** Focus keyword của Rank Math (lấy cái đầu nếu nhiều). */
+    private static function rank_math_keyword(int $post_id): string {
+        $fk = get_post_meta($post_id, 'rank_math_focus_keyword', true);
+        if (!is_string($fk) || $fk === '') {
+            return '';
+        }
+        $parts = explode(',', $fk);
+        return trim($parts[0]);
+    }
+
+    /** Tối đa 3 thông điệp lỗi (fail) để hiển thị cột "vấn đề chính". */
+    public static function top_issues(array $r): array {
+        $out = [];
+        foreach ($r['issues'] as $i) {
+            if ($i['status'] === 'fail') {
+                $out[] = $i['message'] !== '' ? $i['message'] : $i['check'];
+            }
+        }
+        return array_slice($out, 0, 3);
+    }
+
+    /** Thống kê tổng cho Tổng quan. */
+    public static function stats(): array {
+        global $wpdb;
+        $total = (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status='publish' AND post_type IN ('post','page')"
+        );
+        $vals   = $wpdb->get_col($wpdb->prepare("SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key=%s", self::META_SCORE));
+        $scores = array_map('intval', $vals);
+        $scored = count($scores);
+        return [
+            'total'    => $total,
+            'scored'   => $scored,
+            'avg'      => $scored ? (int) round(array_sum($scores) / $scored) : null,
+            'critical' => count(array_filter($scores, static function ($s) { return $s < 50; })),
+        ];
+    }
+
+    /** Danh sách trang đã chấm (điểm thấp trước). */
+    public static function scored_pages(int $limit = 50): array {
+        $posts = get_posts([
+            'post_type'   => ['post', 'page'],
+            'post_status' => 'publish',
+            'numberposts' => $limit,
+            'meta_key'    => self::META_SCORE,
+            'orderby'     => 'meta_value_num',
+            'order'       => 'ASC',
+        ]);
+        $rows = [];
+        foreach ($posts as $p) {
+            $issues = json_decode((string) get_post_meta($p->ID, self::META_ISSUES, true), true);
+            $rows[] = [
+                'id'      => $p->ID,
+                'title'   => get_the_title($p),
+                'edit'    => get_edit_post_link($p->ID, ''),
+                'score'   => (int) get_post_meta($p->ID, self::META_SCORE, true),
+                'kw'      => get_post_meta($p->ID, self::META_KW, true),
+                'issues'  => is_array($issues) ? $issues : [],
+            ];
+        }
+        return $rows;
+    }
 }
