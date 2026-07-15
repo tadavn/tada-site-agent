@@ -3,7 +3,7 @@
  * Plugin Name: TADA Site Agent
  * Plugin URI:  https://webkit.tada.vn
  * Description: Edge agent thu thập tín hiệu sức khỏe website (SEO, cấu hình Rank Math) qua REST API xác thực HMAC-SHA256, phục vụ nền tảng phân tích của TADA. Read-only. Built by TADA.
- * Version:     1.4.0
+ * Version:     1.5.0
  * Requires PHP: 7.4
  * Author:      TADA
  * Author URI:  https://tada.vn
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('TADA_SITE_AGENT_VERSION', '1.4.0');
+define('TADA_SITE_AGENT_VERSION', '1.5.0');
 define('TADA_SITE_AGENT_FILE', __FILE__);
 define('TADA_SITE_AGENT_PATH', plugin_dir_path(__FILE__));
 define('TADA_SITE_AGENT_URL', plugin_dir_url(__FILE__));

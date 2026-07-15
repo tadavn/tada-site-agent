@@ -27,7 +27,9 @@ final class Tada_Site_Agent_Plugin {
     /** Nạp các lớp thành phần. */
     private function load(): void {
         $inc = TADA_SITE_AGENT_PATH . 'includes/';
+        require_once $inc . 'class-i18n.php';
         require_once $inc . 'class-rankmath-reader.php';
+        require_once $inc . 'class-seo-scorer.php';
         require_once $inc . 'class-security.php';
         require_once $inc . 'class-rest-controller.php';
         require_once $inc . 'class-admin-menu.php';

@@ -1,0 +1,77 @@
+/* TADA Site Agent — admin design system. Scope: .tsa (tránh đụng wp-admin). */
+
+.tsa {
+  --tsa-accent: #FF6400;
+  --tsa-accent-bg: #FFF1E8;
+  --tsa-accent-ink: #A83F00;
+  --tsa-ink: #1e1e1e;
+  --tsa-muted: #646970;
+  --tsa-faint: #8c8f94;
+  --tsa-card: #fff;
+  --tsa-line: #e2e4e7;
+  --tsa-bg-soft: #f6f7f7;
+  --tsa-green: #1d7a5f; --tsa-green-bg: #e3f4ee;
+  --tsa-amber: #96650a; --tsa-amber-bg: #fbeed4;
+  --tsa-red: #b3261e;   --tsa-red-bg: #fbe7e6;
+  --tsa-radius: 12px;
+  color: var(--tsa-ink);
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 1100px;
+}
+
+/* header */
+.tsa-head { display:flex; align-items:center; gap:12px; margin: 8px 0 2px; }
+.tsa-logo { width:32px; height:32px; border-radius:8px; background:var(--tsa-accent); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+.tsa-title { font-size:18px; font-weight:600; margin:0; }
+.tsa-conn { margin-left:auto; font-size:12px; padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:6px; }
+.tsa-conn.ok  { background:var(--tsa-green-bg); color:var(--tsa-green); }
+.tsa-conn.off { background:var(--tsa-red-bg);   color:var(--tsa-red); }
+
+/* tab nav */
+.tsa-tabs { display:flex; gap:24px; border-bottom:1px solid var(--tsa-line); margin:16px 0 22px; }
+.tsa-tab { padding:10px 0; color:var(--tsa-muted); text-decoration:none; font-size:14px; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.tsa-tab:hover { color:var(--tsa-ink); }
+.tsa-tab.active { color:var(--tsa-accent-ink); border-bottom-color:var(--tsa-accent); font-weight:600; }
+
+/* section */
+.tsa-sec-label { font-size:13px; color:var(--tsa-muted); margin:0 0 12px; }
+.tsa-sec-head { display:flex; align-items:baseline; justify-content:space-between; margin:0 0 10px; }
+.tsa-sec-head h2 { font-size:15px; font-weight:600; margin:0; }
+.tsa-sec-note { font-size:12.5px; color:var(--tsa-muted); }
+.tsa-source { font-size:12px; color:var(--tsa-faint); margin:10px 2px 0; }
+
+/* cards */
+.tsa-cards { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px; }
+.tsa-card { background:var(--tsa-card); border:1px solid var(--tsa-line); border-radius:var(--tsa-radius); padding:18px 20px; }
+.tsa-tile { flex:1; min-width:120px; background:var(--tsa-bg-soft); border-radius:var(--tsa-radius); padding:16px 18px; }
+.tsa-tile .k { font-size:13px; color:var(--tsa-muted); }
+.tsa-tile .v { font-size:24px; font-weight:600; margin-top:2px; }
+.tsa-tile .v small { font-size:14px; color:var(--tsa-faint); font-weight:400; }
+
+/* hero score */
+.tsa-hero { flex:1; min-width:200px; display:flex; align-items:center; gap:16px; }
+.tsa-score-ring { width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; }
+
+/* score badge + status */
+.tsa-badge { padding:2px 9px; border-radius:20px; font-weight:600; font-size:13px; }
+.tsa-good { background:var(--tsa-green-bg); color:var(--tsa-green); }
+.tsa-mid  { background:var(--tsa-amber-bg); color:var(--tsa-amber); }
+.tsa-bad  { background:var(--tsa-red-bg);   color:var(--tsa-red); }
+
+/* table */
+.tsa-table { background:var(--tsa-card); border:1px solid var(--tsa-line); border-radius:var(--tsa-radius); overflow:hidden; }
+.tsa-row { display:grid; gap:12px; padding:11px 16px; align-items:center; border-bottom:1px solid var(--tsa-line); font-size:13px; }
+.tsa-row:last-child { border-bottom:0; }
+.tsa-row.head { font-size:12px; color:var(--tsa-faint); }
+.tsa-ellip { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* forms (dùng cùng control wp nhưng canh lại) */
+.tsa-field { margin-bottom:18px; max-width:520px; }
+.tsa-field label { display:block; font-weight:600; margin-bottom:6px; }
+.tsa-field .hint { font-size:12.5px; color:var(--tsa-muted); margin-top:6px; }
+.tsa-btn-primary { background:var(--tsa-accent) !important; border-color:var(--tsa-accent) !important; color:#fff !important; }
+.tsa-btn-primary:hover { background:var(--tsa-accent-ink) !important; border-color:var(--tsa-accent-ink) !important; }
+
+/* stub */
+.tsa-stub { background:var(--tsa-bg-soft); border:1px dashed var(--tsa-line); border-radius:var(--tsa-radius); padding:32px; text-align:center; color:var(--tsa-muted); }
