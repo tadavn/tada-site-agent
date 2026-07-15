@@ -2,7 +2,7 @@
 /**
  * Self-update qua GitHub Releases + Plugin Update Checker (PUC).
  * PUC vendor qua composer → nạp bằng `vendor/autoload.php` (fallback thư mục standalone).
- * Repo: https://github.com/tadavn/site-health-agent (PUBLIC → không cần token).
+ * Repo: https://github.com/tadavn/tada-site-agent (PUBLIC → không cần token).
  * No-op nếu chưa vendor PUC (không fatal).
  *
  * @since 1.4.0
@@ -10,8 +10,8 @@
 
 defined('ABSPATH') || exit;
 
-if (!function_exists('site_health_agent_setup_updates')) {
-    function site_health_agent_setup_updates(string $main_file, string $slug): void {
+if (!function_exists('tada_site_agent_setup_updates')) {
+    function tada_site_agent_setup_updates(string $main_file, string $slug): void {
         $dir = plugin_dir_path($main_file);
 
         // Nạp PUC: ưu tiên composer vendor, fallback thư mục standalone.
@@ -34,8 +34,8 @@ if (!function_exists('site_health_agent_setup_updates')) {
         $checker->getVcsApi()->enableReleaseAssets(); // dùng .zip đính kèm Release
 
         // Repo PRIVATE mới cần token (đặt trong wp-config mỗi site). PUBLIC bỏ qua.
-        if (defined('SITE_HEALTH_AGENT_GH_TOKEN') && SITE_HEALTH_AGENT_GH_TOKEN) {
-            $checker->setAuthentication(SITE_HEALTH_AGENT_GH_TOKEN);
+        if (defined('TADA_SITE_AGENT_GH_TOKEN') && TADA_SITE_AGENT_GH_TOKEN) {
+            $checker->setAuthentication(TADA_SITE_AGENT_GH_TOKEN);
         }
     }
 }

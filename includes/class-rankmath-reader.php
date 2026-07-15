@@ -1,6 +1,6 @@
 <?php
 /**
- * Site_Health_Agent_RankMath_Reader
+ * Tada_Site_Agent_RankMath_Reader
  *
  * Read-only collector for Rank Math SEO plugin configuration.
  * SECURITY: Uses get_option() and $wpdb SELECT queries only — zero write operations.
@@ -11,7 +11,7 @@
 
 defined('ABSPATH') || exit;
 
-class Site_Health_Agent_RankMath_Reader {
+class Tada_Site_Agent_RankMath_Reader {
 
     public static function collect(): array {
         $active = self::is_rank_math_active();

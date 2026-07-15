@@ -1,6 +1,6 @@
 <?php
 /**
- * Site_Health_Agent_Security — xác thực HMAC, rate limit, chống replay, log auth.
+ * Tada_Site_Agent_Security — xác thực HMAC, rate limit, chống replay, log auth.
  * Tách từ main file (Nhịp OOP 1.4.0); logic giữ nguyên.
  *
  * @since 1.4.0
@@ -8,7 +8,7 @@
 
 defined('ABSPATH') || exit;
 
-class Site_Health_Agent_Security {
+class Tada_Site_Agent_Security {
 
     /**
      * Xác thực đầy đủ: rate limit + HMAC + chống replay.
@@ -27,23 +27,23 @@ class Site_Health_Agent_Security {
         }
 
         // 2. Secret key phải được cấu hình
-        $secret_key = get_option('site_health_agent_secret_key', '');
-        if (empty($secret_key) || strlen($secret_key) < SITE_HEALTH_AGENT_MIN_KEY_LENGTH) {
+        $secret_key = get_option('tada_site_agent_secret_key', '');
+        if (empty($secret_key) || strlen($secret_key) < TADA_SITE_AGENT_MIN_KEY_LENGTH) {
             self::log_attempt($ip, 'no_key');
             return new WP_Error(
-                'site_health_agent_no_key',
-                'Site Health Agent secret key is not configured or too short.',
+                'tada_site_agent_no_key',
+                'TADA Site Agent secret key is not configured or too short.',
                 ['status' => 403]
             );
         }
 
         // 3. Header bắt buộc
-        $timestamp = $request->get_header('X-Site-Health-Agent-Timestamp');
-        $signature = $request->get_header('X-Site-Health-Agent-Signature');
+        $timestamp = $request->get_header('X-Tada-Site-Agent-Timestamp');
+        $signature = $request->get_header('X-Tada-Site-Agent-Signature');
         if (empty($timestamp) || empty($signature)) {
             self::log_attempt($ip, 'missing_headers');
             return new WP_Error(
-                'site_health_agent_missing_headers',
+                'tada_site_agent_missing_headers',
                 'Missing authentication headers.',
                 ['status' => 401]
             );
@@ -53,7 +53,7 @@ class Site_Health_Agent_Security {
         if (!ctype_digit($timestamp)) {
             self::log_attempt($ip, 'invalid_timestamp');
             return new WP_Error(
-                'site_health_agent_invalid_timestamp',
+                'tada_site_agent_invalid_timestamp',
                 'Invalid timestamp format.',
                 ['status' => 401]
             );
@@ -61,10 +61,10 @@ class Site_Health_Agent_Security {
 
         // 5. Timestamp trong cửa sổ cho phép
         $time_diff = abs(time() - intval($timestamp));
-        if ($time_diff > SITE_HEALTH_AGENT_TIMESTAMP_WINDOW) {
+        if ($time_diff > TADA_SITE_AGENT_TIMESTAMP_WINDOW) {
             self::log_attempt($ip, 'expired');
             return new WP_Error(
-                'site_health_agent_expired',
+                'tada_site_agent_expired',
                 'Request timestamp expired.',
                 ['status' => 401]
             );
@@ -82,7 +82,7 @@ class Site_Health_Agent_Security {
         if (!hash_equals($expected, $signature)) {
             self::log_attempt($ip, 'invalid_signature');
             return new WP_Error(
-                'site_health_agent_invalid_sig',
+                'tada_site_agent_invalid_sig',
                 'Invalid signature.',
                 ['status' => 401]
             );
@@ -116,18 +116,18 @@ class Site_Health_Agent_Security {
      * @return bool|WP_Error
      */
     private static function check_rate_limit(string $ip) {
-        $key = 'site_health_agent_rate_' . md5($ip);
+        $key = 'tada_site_agent_rate_' . md5($ip);
         $count = (int) get_transient($key);
 
-        if ($count >= SITE_HEALTH_AGENT_RATE_LIMIT) {
+        if ($count >= TADA_SITE_AGENT_RATE_LIMIT) {
             return new WP_Error(
-                'site_health_agent_rate_limited',
+                'tada_site_agent_rate_limited',
                 'Too many requests. Please try again later.',
                 ['status' => 429]
             );
         }
 
-        set_transient($key, $count + 1, SITE_HEALTH_AGENT_RATE_WINDOW);
+        set_transient($key, $count + 1, TADA_SITE_AGENT_RATE_WINDOW);
         return true;
     }
 
@@ -137,10 +137,10 @@ class Site_Health_Agent_Security {
      * @return bool|WP_Error
      */
     private static function check_replay(string $timestamp) {
-        $key = 'site_health_agent_ts_' . $timestamp;
+        $key = 'tada_site_agent_ts_' . $timestamp;
         if (get_transient($key)) {
             return new WP_Error(
-                'site_health_agent_replay',
+                'tada_site_agent_replay',
                 'Duplicate request detected.',
                 ['status' => 401]
             );
@@ -150,13 +150,13 @@ class Site_Health_Agent_Security {
 
     /** Đánh dấu timestamp đã dùng (giữ trong suốt cửa sổ timestamp). */
     private static function mark_timestamp_used(string $timestamp): void {
-        $key = 'site_health_agent_ts_' . $timestamp;
-        set_transient($key, 1, SITE_HEALTH_AGENT_TIMESTAMP_WINDOW + 60);
+        $key = 'tada_site_agent_ts_' . $timestamp;
+        set_transient($key, 1, TADA_SITE_AGENT_TIMESTAMP_WINDOW + 60);
     }
 
     /** Ghi log auth (lưu option, giữ 50 dòng gần nhất). */
     public static function log_attempt(string $ip, string $result): void {
-        $logs = get_option('site_health_agent_auth_log', []);
+        $logs = get_option('tada_site_agent_auth_log', []);
         if (!is_array($logs)) {
             $logs = [];
         }
@@ -168,6 +168,6 @@ class Site_Health_Agent_Security {
         ]);
 
         $logs = array_slice($logs, 0, 50);
-        update_option('site_health_agent_auth_log', $logs, false); // autoload = false
+        update_option('tada_site_agent_auth_log', $logs, false); // autoload = false
     }
 }

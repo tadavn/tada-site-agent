@@ -1,6 +1,6 @@
 <?php
 /**
- * Site_Health_Agent_Rest_Controller — REST endpoints (scan + ping).
+ * Tada_Site_Agent_Rest_Controller — REST endpoints (scan + ping).
  * Tách từ main file (Nhịp OOP 1.4.0).
  *
  * @since 1.4.0
@@ -8,21 +8,21 @@
 
 defined('ABSPATH') || exit;
 
-class Site_Health_Agent_Rest_Controller {
+class Tada_Site_Agent_Rest_Controller {
 
     public static function init(): void {
         add_action('rest_api_init', [self::class, 'register_routes']);
     }
 
     public static function register_routes(): void {
-        register_rest_route('site-health-agent/v1', '/scan', [
+        register_rest_route('tada-site-agent/v1', '/scan', [
             'methods'             => 'POST',
             'callback'            => [self::class, 'handle_scan'],
-            'permission_callback' => ['Site_Health_Agent_Security', 'verify_request'],
+            'permission_callback' => ['Tada_Site_Agent_Security', 'verify_request'],
         ]);
 
         // Health check — không cần auth, trả thông tin tối thiểu.
-        register_rest_route('site-health-agent/v1', '/ping', [
+        register_rest_route('tada-site-agent/v1', '/ping', [
             'methods'             => 'GET',
             'callback'            => [self::class, 'handle_ping'],
             'permission_callback' => '__return_true',
@@ -31,9 +31,9 @@ class Site_Health_Agent_Rest_Controller {
 
     /** Thu thập cấu hình Rank Math và trả về (read-only). */
     public static function handle_scan(WP_REST_Request $request): WP_REST_Response {
-        $data = Site_Health_Agent_RankMath_Reader::collect();
+        $data = Tada_Site_Agent_RankMath_Reader::collect();
 
-        $data['pluginVersion'] = SITE_HEALTH_AGENT_VERSION;
+        $data['pluginVersion'] = TADA_SITE_AGENT_VERSION;
         $data['wpVersion']     = get_bloginfo('version');
         $data['siteUrl']       = get_site_url();
         $data['scannedAt']     = gmdate('c');
@@ -45,8 +45,8 @@ class Site_Health_Agent_Rest_Controller {
     public static function handle_ping(): WP_REST_Response {
         return new WP_REST_Response([
             'status'  => 'ok',
-            'plugin'  => 'site-health-agent',
-            'version' => SITE_HEALTH_AGENT_VERSION,
+            'plugin'  => 'tada-site-agent',
+            'version' => TADA_SITE_AGENT_VERSION,
         ], 200);
     }
 }
