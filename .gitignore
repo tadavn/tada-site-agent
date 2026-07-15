@@ -1,0 +1,12 @@
+# macOS junk
+.DS_Store
+Icon
+Icon?
+
+# Build artifacts
+/build/
+*.zip
+
+# Editor
+.idea/
+.vscode/

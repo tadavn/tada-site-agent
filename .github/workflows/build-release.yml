@@ -1,0 +1,36 @@
+name: Build & Release
+
+# Bump `Version:` trong header → push tag `vX.Y.Z` → workflow zip + tạo Release.
+# PUC (trong plugin) phát hiện Release → WP hiện nút Update.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build plugin zip (folder gốc = slug)
+        run: |
+          SLUG="${{ github.event.repository.name }}"
+          mkdir -p build/"$SLUG"
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='README.md' \
+            --exclude='build' \
+            ./ build/"$SLUG"/
+          cd build && zip -r "../$SLUG.zip" "$SLUG" -x "*/.DS_Store" -x "*Icon*"
+
+      - name: Create GitHub Release + attach zip
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ github.event.repository.name }}.zip
